@@ -25,16 +25,16 @@ set nowritebackup
 call plug#begin('~/.vim/plugged')
  Plug 'morhetz/gruvbox' "colorscheme
  Plug 'jiangmiao/auto-pairs' "autopair
- Plug 'neoclide/coc.nvim', {'branch': 'release'} 
+ Plug 'neoclide/coc.nvim', {'branch': 'release'} "coc
  "Plug 'codota/tabnine-vim' "tabnine
  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "filefinder
- Plug 'junegunn/fzf.vim'
+ Plug 'junegunn/fzf.vim' "fzzy file finder
  Plug 'mattn/emmet-vim' "html
  Plug '/vim-airline/vim-airline'
  Plug 'vimwiki/vimwiki' "vimwiki
- Plug 'Yggdroot/indentLine'
- Plug 'turbio/bracey.vim'
- Plug 'tpope/vim-surround'
+ Plug 'Yggdroot/indentLine' "vertical lines
+ Plug 'turbio/bracey.vim' "live server
+ Plug 'tpope/vim-surround' "surrounding tags
 call plug#end()
 
 
