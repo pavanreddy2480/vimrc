@@ -84,7 +84,6 @@ let g:netrw_preview = 1
 
 
 "others
-nnoremap <C-i> :%s//gI<Left><Left><Left>
 nnoremap <C-h> :bp<CR>
 nnoremap <C-l> :bn<CR>
 
