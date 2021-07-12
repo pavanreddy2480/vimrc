@@ -35,6 +35,10 @@ call plug#begin('~/.vim/plugged')
  Plug 'Yggdroot/indentLine' "vertical lines
  Plug 'turbio/bracey.vim' "live server
  Plug 'tpope/vim-surround' "surrounding tags
+ Plug 'mhinz/vim-signify' "for git 1
+ Plug 'tpope/vim-fugitive' "for git 2
+ Plug 'tpope/vim-rhubarb' "for git 3
+ Plug 'junegunn/gv.vim' "for git 4
 call plug#end()
 
 
