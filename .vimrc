@@ -25,20 +25,17 @@ set nowritebackup
 call plug#begin('~/.vim/plugged')
  Plug 'morhetz/gruvbox' "colorscheme
  Plug 'jiangmiao/auto-pairs' "autopair
- Plug 'neoclide/coc.nvim', {'branch': 'release'} "coc
+ Plug 'neoclide/coc.nvim', {'branch': 'release'} 
  "Plug 'codota/tabnine-vim' "tabnine
  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "filefinder
- Plug 'junegunn/fzf.vim' "fzzy file finder
+ Plug 'junegunn/fzf.vim'
  Plug 'mattn/emmet-vim' "html
  Plug '/vim-airline/vim-airline'
  Plug 'vimwiki/vimwiki' "vimwiki
- Plug 'Yggdroot/indentLine' "vertical lines
- Plug 'turbio/bracey.vim' "live server
- Plug 'tpope/vim-surround' "surrounding tags
- Plug 'mhinz/vim-signify' "for git 1
- Plug 'tpope/vim-fugitive' "for git 2
- Plug 'tpope/vim-rhubarb' "for git 3
- Plug 'junegunn/gv.vim' "for git 4
+ Plug 'tpope/vim-fugitive' "git extension
+ Plug 'Yggdroot/indentLine'
+ Plug 'turbio/bracey.vim'
+ Plug 'tpope/vim-surround'
 call plug#end()
 
 
@@ -70,7 +67,8 @@ let g:user_emmet_leader_key=','
 let g:indentLine_char = 'c'
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 
-
+"remaping of Esc key
+inoremap jj <Esc>
 
 "vimwiki
 nnoremap <Leader>wt :VimwikiTable<CR>
@@ -88,6 +86,7 @@ let g:netrw_preview = 1
 
 
 "others
+nnoremap <C-i> :%s//gI<Left><Left><Left>
 nnoremap <C-h> :bp<CR>
 nnoremap <C-l> :bn<CR>
 
