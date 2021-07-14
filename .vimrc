@@ -29,7 +29,15 @@ call plug#begin('~/.vim/plugged')
  "Plug 'codota/tabnine-vim' "tabnine
  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "filefinder
  Plug 'junegunn/fzf.vim'
- Plug 'mattn/emmet-vim' "html
+
+ "html
+ Plug 'mattn/emmet-vim' 
+ 
+ "nerdtree
+ Plug 'preservim/nerdtree'
+ Plug 'ryanoasis/vim-devicons'
+
+
  Plug '/vim-airline/vim-airline'
  Plug 'vimwiki/vimwiki' "vimwiki
  Plug 'tpope/vim-fugitive' "git extension
@@ -46,6 +54,20 @@ hi Normal guibg=NONE ctermbg=NONE
 " set Vim-specific sequences for RGB colors
  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+
+ "nerdtree 
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+
+"nerdtree settings
+" Start NERDTree and put the cursor back in the other window.
+autocmd VimEnter * NERDTree | wincmd p
+" Exit Vim if NERDTree is the only window remaining in the only tab.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
 
 "Most imp things are mapped with the leader key and the less imp things are
 "mapped with ctrl key
@@ -85,10 +107,18 @@ let g:netrw_browse_split = 4 "Open in new tab
 let g:netrw_preview = 1
 
 
+"split navigation.
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+
+
 "others
 nnoremap <C-i> :%s//gI<Left><Left><Left>
-nnoremap <C-h> :bp<CR>
-nnoremap <C-l> :bn<CR>
+nnoremap <Leader>h :bp<CR>
+nnoremap <Leader>l :bn<CR>
 
 "To clear all the vim registers whenever you reopen vim
 command! WipeReg for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
