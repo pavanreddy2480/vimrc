@@ -74,7 +74,6 @@ autocmd VimEnter * NERDTree | wincmd p
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
 
-let g:NERDTreeGitStatusWithFlags = 1
 let g:WebDevIconsUnicodeDecorateFolderNodes = 1
 let g:NERDTreeGitStatusNodeColorization = 1
 let g:NERDTreeGitStatusIndicatorMapCustom = {
@@ -90,15 +89,14 @@ let g:NERDTreeGitStatusIndicatorMapCustom = {
                 \ 'Unknown'   :'?',
                 \ }
 let g:NERDTreeGitStatusUseNerdFonts = 1 " you should install nerdfonts by yourself. default: 0
-let g:NERDTreeGitStatusShowIgnored = 1 " a heavy feature may cost much more time. default: 0
-let g:NERDTreeGitStatusUntrackedFilesMode = 'all' " a heavy feature too. default: normal
+"let g:NERDTreeGitStatusShowIgnored = 1 " a heavy feature may cost much more time. default: 0
+"let g:NERDTreeGitStatusUntrackedFilesMode = 'all' " a heavy feature too. default: normal
 "let g:NERDTreeGitStatusGitBinPath = '/your/file/path' " default: git (auto find in path)
 let g:NERDTreeGitStatusShowClean = 1 " default: 0
 let g:NERDTreeGitStatusConcealBrackets = 1 " default: 0
 
 
 
-" loading the plugin
 let g:webdevicons_enable = 1
 " change the default character when no match found
 let g:WebDevIconsUnicodeDecorateFileNodesDefaultSymbol = 'ƛ'
@@ -132,6 +130,10 @@ autocmd BufEnter * call SyncTree()
 
 " prettier command for coc
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
+" run prettier on save
+let g:prettier#autoformat = 0
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
+
 
 "Most imp things are mapped with the leader key and the less imp things are
 "mapped with ctrl key
