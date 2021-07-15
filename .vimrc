@@ -21,11 +21,12 @@ set foldmethod=marker
 " Some servers have issues with backup files, see #649.
 set nobackup
 set nowritebackup
+set encoding=UTF-8
+
 
 call plug#begin('~/.vim/plugged')
  Plug 'morhetz/gruvbox' "colorscheme
  Plug 'jiangmiao/auto-pairs' "autopair
- Plug 'neoclide/coc.nvim', {'branch': 'release'} 
  "Plug 'codota/tabnine-vim' "tabnine
  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "filefinder
  Plug 'junegunn/fzf.vim'
@@ -34,12 +35,19 @@ call plug#begin('~/.vim/plugged')
  Plug 'mattn/emmet-vim' 
  
  "nerdtree
- Plug 'preservim/nerdtree'
  Plug 'ryanoasis/vim-devicons'
+ Plug 'preservim/nerdtree'
+ Plug 'Xuyuanp/nerdtree-git-plugin'
+ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
+
+ Plug 'neoclide/coc.nvim', {'branch': 'release'} 
 
  Plug '/vim-airline/vim-airline'
  Plug 'vimwiki/vimwiki' "vimwiki
+ Plug 'christoomey/vim-tmux-navigator'
+ Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+ Plug 'airblade/vim-gitgutter'
  Plug 'tpope/vim-fugitive' "git extension
  Plug 'Yggdroot/indentLine'
  Plug 'turbio/bracey.vim'
@@ -56,11 +64,8 @@ hi Normal guibg=NONE ctermbg=NONE
  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
  "nerdtree 
-nnoremap <leader>n :NERDTreeFocus<CR>
-nnoremap <C-n> :NERDTree<CR>
-nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-n> :NERDTreeToggle<CR>
 nnoremap <C-f> :NERDTreeFind<CR>
-
 
 "nerdtree settings
 " Start NERDTree and put the cursor back in the other window.
@@ -69,11 +74,71 @@ autocmd VimEnter * NERDTree | wincmd p
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
 
+let g:NERDTreeGitStatusWithFlags = 1
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+let g:NERDTreeGitStatusNodeColorization = 1
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+                \ 'Modified'  :'✹',
+                \ 'Staged'    :'✚',
+                \ 'Untracked' :'✭',
+                \ 'Renamed'   :'➜',
+                \ 'Unmerged'  :'═',
+                \ 'Deleted'   :'✖',
+                \ 'Dirty'     :'✗',
+                \ 'Ignored'   :'☒',
+                \ 'Clean'     :'✔︎',
+                \ 'Unknown'   :'?',
+                \ }
+let g:NERDTreeGitStatusUseNerdFonts = 1 " you should install nerdfonts by yourself. default: 0
+let g:NERDTreeGitStatusShowIgnored = 1 " a heavy feature may cost much more time. default: 0
+let g:NERDTreeGitStatusUntrackedFilesMode = 'all' " a heavy feature too. default: normal
+"let g:NERDTreeGitStatusGitBinPath = '/your/file/path' " default: git (auto find in path)
+let g:NERDTreeGitStatusShowClean = 1 " default: 0
+let g:NERDTreeGitStatusConcealBrackets = 1 " default: 0
+
+
+
+" loading the plugin
+let g:webdevicons_enable = 1
+" change the default character when no match found
+let g:WebDevIconsUnicodeDecorateFileNodesDefaultSymbol = 'ƛ'
+let g:WebDevIconsOS = 'Darwin'
+let g:NERDTreeIgnore = ['^node_modules$']
+set guifont=DroidSansMono\ Nerd\ Font\ 11
+let g:airline_powerline_fonts = 1
+
+
+" sync open file with NERDTree
+" Check if NERDTree is open or active
+function! IsNERDTreeOpen()
+  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
+endfunction
+
+" Call NERDTreeFind iff NERDTree is active, current window contains a modifiable
+" file, and we're not in vimdiff
+function! SyncTree()
+  if &modifiable && IsNERDTreeOpen() && strlen(expand('%')) > 0 && !&diff
+    NERDTreeFind
+    wincmd p
+  endif
+endfunction
+
+" Highlight currently open buffer in NERDTree
+autocmd BufEnter * call SyncTree()
+
+
+
+
+
+" prettier command for coc
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+
 "Most imp things are mapped with the leader key and the less imp things are
 "mapped with ctrl key
 
 let mapleader=" "
 let maplocalleader=";"
+
 
 
 "fuzzy file finder
@@ -99,30 +164,33 @@ nnoremap <Leader>wt :VimwikiTable<CR>
 :hi VimwikiHeader3 guifg=#FFDC00 "yellow
 nnoremap <Leader>wha :VimwikiAll2HTML<CR>
 
-"netrw list settings
-nnoremap <C-n> :wincmd v<bar> :Ex<bar> :vertical resize 25<CR>
-let g:netrw_banner = 0
-let g:netrw_liststyle = 3 "Tree style
-let g:netrw_browse_split = 4 "Open in new tab
-let g:netrw_preview = 1
-
-
-"split navigation.
-map <C-h> <C-w>h
-map <C-j> <C-w>j
-map <C-k> <C-w>k
-map <C-l> <C-w>l
-
-
 
 "others
 nnoremap <C-i> :%s//gI<Left><Left><Left>
-nnoremap <Leader>h :bp<CR>
-nnoremap <Leader>l :bn<CR>
+nnoremap <Leader>b :bp<CR>
+nnoremap <Leader>n :bn<CR>
 
 "To clear all the vim registers whenever you reopen vim
 command! WipeReg for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
 autocmd VimEnter * WipeReg
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 " Set internal encoding of vim, not needed on neovim, since coc.nvim using some
