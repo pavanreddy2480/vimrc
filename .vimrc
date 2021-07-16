@@ -92,7 +92,7 @@ let g:NERDTreeGitStatusUseNerdFonts = 1 " you should install nerdfonts by yourse
 "let g:NERDTreeGitStatusShowIgnored = 1 " a heavy feature may cost much more time. default: 0
 "let g:NERDTreeGitStatusUntrackedFilesMode = 'all' " a heavy feature too. default: normal
 "let g:NERDTreeGitStatusGitBinPath = '/your/file/path' " default: git (auto find in path)
-let g:NERDTreeGitStatusShowClean = 1 " default: 0
+let g:NERDTreeGitStatusShowClean = 0 " default: 0
 let g:NERDTreeGitStatusConcealBrackets = 1 " default: 0
 
 
@@ -146,6 +146,7 @@ let maplocalleader=";"
 "fuzzy file finder
 nnoremap <Leader>ff  :Files<CR>
 nnoremap <Leader>fb  :Buffers<CR>
+
 
 "html completor
 let g:user_emmet_install_global = 0
