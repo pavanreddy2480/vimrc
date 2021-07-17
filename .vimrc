@@ -22,50 +22,146 @@ set foldmethod=marker
 set nobackup
 set nowritebackup
 set encoding=UTF-8
+set mouse=a
+let g:NERDTreeMouseMode=3
 
+call plug#begin('~/.config/nvim/autoload/plugged')
 
-call plug#begin('~/.vim/plugged')
- Plug 'morhetz/gruvbox' "colorscheme
- Plug 'jiangmiao/auto-pairs' "autopair
- "Plug 'codota/tabnine-vim' "tabnine
- Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "filefinder
- Plug 'junegunn/fzf.vim'
-
- "html
- Plug 'mattn/emmet-vim' 
- 
- "nerdtree
- Plug 'ryanoasis/vim-devicons'
- Plug 'preservim/nerdtree'
- Plug 'Xuyuanp/nerdtree-git-plugin'
- Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-
-
- Plug 'neoclide/coc.nvim', {'branch': 'release'} 
-
- Plug '/vim-airline/vim-airline'
- Plug 'vimwiki/vimwiki' "vimwiki
- Plug 'christoomey/vim-tmux-navigator'
- Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
- Plug 'airblade/vim-gitgutter'
- Plug 'tpope/vim-fugitive' "git extension
- Plug 'Yggdroot/indentLine'
- Plug 'turbio/bracey.vim'
- Plug 'tpope/vim-surround'
+    " Better Syntax Support
+    Plug 'sheerun/vim-polyglot'
+    Plug 'jiangmiao/auto-pairs'
+    Plug 'morhetz/gruvbox' "colorscheme
+    Plug 'christoomey/vim-tmux-navigator'
+    Plug 'tpope/vim-surround'
+    
+    
+    
+    "finding files
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "filefinder
+    Plug 'junegunn/fzf.vim'
+    Plug 'wookayin/fzf-ripgrep.vim'
+    Plug 'neoclide/coc.nvim', {'branch': 'release'} 
+    
+    
+    
+     "nerdtree
+    Plug 'ryanoasis/vim-devicons'
+    Plug 'preservim/nerdtree'
+    Plug 'Xuyuanp/nerdtree-git-plugin'
+    Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+    "Plug 'itchyny/lightline.vim'
+    Plug 'vim-airline/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
+	
+    
+    
+    
+    "web
+    Plug 'mattn/emmet-vim'
+    Plug 'turbio/bracey.vim'
+    Plug 'airblade/vim-gitgutter'
+    Plug 'tpope/vim-fugitive' "git extension
+	
+	
 call plug#end()
+
+set ttymouse=xterm2
+set ttyfast
+
+
+let g:airline_theme = 'simple'
 
 
 colorscheme gruvbox
 set background=dark
 hi Normal guibg=NONE ctermbg=NONE
 
+
 " set Vim-specific sequences for RGB colors
  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
+
+"Most imp things are mapped with the leader key and the less imp things are
+"mapped with ctrl key
+let mapleader=" "
+let maplocalleader=";"
+
+
+
+"fuzzy file finder
+nnoremap <Leader>ff  :Files<CR>
+nnoremap <Leader>fb  :Buffers<CR>
+
+
+"html completor
+let g:user_emmet_install_global = 0
+autocmd FileType html,css EmmetInstall
+let g:user_emmet_leader_key=','
+
+
+"vertical lines
+let g:indentLine_char = 'c'
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+
+
+"remaping of Esc key
+inoremap jj <Esc>
+
+"vimwiki
+nnoremap <Leader>wt :VimwikiTable<CR>
+:hi VimwikiHeader1 guifg=#FF4136 "red
+:hi VimwikiHeader2 guifg=#FF851B "orange
+:hi VimwikiHeader3 guifg=#FFDC00 "yellow
+nnoremap <Leader>wha :VimwikiAll2HTML<CR>
+
+
+
+
+"others
+nnoremap <C-i> :%s//gI<Left><Left><Left>
+nnoremap <Leader>b :bp<CR>
+nnoremap <Leader>n :bn<CR>
+
+"To clear all the vim registers whenever you reopen vim
+command! WipeReg for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
+autocmd VimEnter * WipeReg
+
+
+
+
+
+
+" Your vimrc
+function! GitStatus()
+  let [a,m,r] = GitGutterGetHunkSummary()
+  return printf('+%d ~%d -%d', a, m, r)
+endfunction
+set statusline+=%{GitStatus()}
+
+let g:gitgutter_sign_allow_clobber = 1
+
+highlight link GitGutterChangeLine DiffText
+
+highlight! link SignColumn LineNr
+
+highlight GitGutterAdd    guifg=#009900 ctermfg=2
+highlight GitGutterChange guifg=#bbbb00 ctermfg=3
+highlight GitGutterDelete guifg=#ff2222 ctermfg=1
+
+let g:airline#extensions#tabline#enabled = 1
+
+
+
+
  "nerdtree 
-nnoremap <C-n> :NERDTreeToggle<CR>
+"nnoremap <C-n> :NERDTreeToggle<CR>
+"nnoremap <C-f> :NERDTreeFind<CR>
+nnoremap <leader>fo :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-f> :NERDTreeFind<CR>
+
 
 "nerdtree settings
 " Start NERDTree and put the cursor back in the other window.
@@ -128,67 +224,8 @@ autocmd BufEnter * call SyncTree()
 
 
 
-" prettier command for coc
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
-" run prettier on save
-let g:prettier#autoformat = 0
-autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
 
-
-"Most imp things are mapped with the leader key and the less imp things are
-"mapped with ctrl key
-
-let mapleader=" "
-let maplocalleader=";"
-
-
-
-"fuzzy file finder
-nnoremap <Leader>ff  :Files<CR>
-nnoremap <Leader>fb  :Buffers<CR>
-
-
-"html completor
-let g:user_emmet_install_global = 0
-autocmd FileType html,css EmmetInstall
-let g:user_emmet_leader_key=','
-
-"vertical lines
-let g:indentLine_char = 'c'
-let g:indentLine_char_list = ['|', '¦', '┆', '┊']
-
-"remaping of Esc key
-inoremap jj <Esc>
-
-"vimwiki
-nnoremap <Leader>wt :VimwikiTable<CR>
-:hi VimwikiHeader1 guifg=#FF4136 "red
-:hi VimwikiHeader2 guifg=#FF851B "orange
-:hi VimwikiHeader3 guifg=#FFDC00 "yellow
-nnoremap <Leader>wha :VimwikiAll2HTML<CR>
-
-
-"others
-nnoremap <C-i> :%s//gI<Left><Left><Left>
-nnoremap <Leader>b :bp<CR>
-nnoremap <Leader>n :bn<CR>
-
-"To clear all the vim registers whenever you reopen vim
-command! WipeReg for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
-autocmd VimEnter * WipeReg
-
-
-
-
-
-
-
-
-
-
-
-
-
+"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 
 
