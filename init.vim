@@ -20,9 +20,17 @@ set wildmode=longest,list,full
 set foldmethod=marker
 " Some servers have issues with backup files, see #649.
 set nobackup
-set encoding=UTF-8
 set nowritebackup
+set encoding=UTF-8
 set mouse=a
+set t_Co=256
+set ttyfast
+set statusline=%f
+set statusline+=/ 
+"set statusline=%.20F
+set splitbelow splitright
+
+
 
 call plug#begin('~/.config/nvim/autoload/plugged')
 
@@ -35,33 +43,49 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'mbbill/undotree'
     Plug 'honza/vim-snippets'
     Plug 'joshdick/onedark.vim'
-
+    "Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
 
 
     "finding files
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "filefinder
     Plug 'junegunn/fzf.vim'
-    Plug 'wookayin/fzf-ripgrep.vim'
-    Plug 'neoclide/coc.nvim', {'branch': 'release'} 
+    "Plug 'wookayin/fzf-ripgrep.vim'
     "Plug 'simrat39/symbols-outline.nvim'
     "Plug 'glepnir/lspsaga.nvim'
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
+    
 
 
+
+
+
+
+    Plug 'voldikss/vim-floaterm'
+    Plug 'qpkorr/vim-bufkill'
     
-    
-     "nerdtree
+
+
+
+
+
+    "nerdtree
     Plug 'ryanoasis/vim-devicons'
-    "Plug 'preservim/nerdtree'
-    "Plug 'Xuyuanp/nerdtree-git-plugin'
-    "Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+    Plug 'preservim/nerdcommenter'
+    Plug 'preservim/nerdtree'
+    Plug 'Xuyuanp/nerdtree-git-plugin'
+    Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
     "Plug 'itchyny/lightline.vim'
     Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
 	
-    Plug 'lambdalisue/fern.vim'
+    "Plug 'lambdalisue/fern.vim'
     Plug 'easymotion/vim-easymotion'
     
-    
+
+
+
+
     "web
     Plug 'mattn/emmet-vim'
     Plug 'turbio/bracey.vim'
@@ -69,10 +93,19 @@ call plug#begin('~/.config/nvim/autoload/plugged')
     Plug 'tpope/vim-fugitive' "git extension
 	Plug 'Yggdroot/indentLine'
 	
+
+
+
+
+
 call plug#end()
 
 "set ttymouse=xterm2
-set ttyfast
+
+
+
+
+
 
 
 "/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,12 +138,110 @@ set noshowmode
 
 
 
+
+
+
+"//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+" onedark.vim override: Don't set a background color when running in a terminal;
+"if (has("autocmd") && !has("gui_running"))
+  "augroup colorset
+    "autocmd!
+    "let s:white = { "gui": "#ABB2BF", "cterm": "145", "cterm16" : "7" }
+    "autocmd ColorScheme * call onedark#set_highlight("Normal", { "fg": s:white }) " `bg` will not be styled since there is no `bg` setting
+  "augroup END
+"endif
+
+"hi Comment cterm=italic
+"let g:onedark_hide_endofbuffer=1
+"let g:onedark_terminal_italics=1
+"let g:onedark_termcolors=256
+
+"syntax on
 "colorscheme onedark
+
+
+
+" checks if your terminal has 24-bit color support
+if (has("termguicolors"))
+    set termguicolors
+    hi LineNr ctermbg=NONE guibg=NONE
+endif
+
+
 
 
 colorscheme gruvbox
 set background=dark
 hi Normal guibg=NONE ctermbg=NONE
+
+
+
+
+
+augroup exe_code
+    autocmd!
+
+    autocmd FileType c nnoremap <buffer> <leader>rr
+                \ :FloatermNew --autoclose=0 gcc % -o %< && ./%< <CR>
+ 
+    autocmd FileType cpp nnoremap <buffer> <leader>rr
+                \ :FloatermNew --autoclose=0 g++ % -o %< && ./%< <CR>
+
+    "autocmd FileType python nnoremap <buffer> <leader>rr
+    "            \ :sp<CR> :term python3 %<CR> :startinsert<CR>
+
+
+    autocmd FileType python nnoremap <buffer> <leader>rr
+                \ :FloatermNew --autoclose=0 python3 % <CR> 
+augroup END
+
+
+
+"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+" Configuration example
+let g:floaterm_keymap_new    = '<F7>'
+let g:floaterm_keymap_prev   = '<F8>'
+let g:floaterm_keymap_next   = '<F9>'
+let g:floaterm_keymap_toggle = '<F12>'
+
+
+autocmd User FloatermOpen        " triggered after opening a new/existed floaterm
+
+
+" Configuration example
+
+" Set floaterm window's background to black
+hi Floaterm guibg=black
+" Set floating window border line color to cyan, and background to orange
+hi FloatermBorder guibg=purple guifg=cyan
+
+
+
+
+
+
+
+"////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 " set Vim-specific sequences for RGB colors
@@ -127,7 +258,6 @@ hi Normal guibg=NONE ctermbg=NONE
 "mapped with ctrl key
 let mapleader=" "
 let maplocalleader=";"
-
 
 
 
@@ -152,7 +282,8 @@ let g:indentLine_char = '┊'
 
 
 
-
+nnoremap <C-d> :BD<CR>
+nnoremap <C-n> :set hlsearch!<CR>
 "remaping of Esc key
 inoremap jj <Esc>
 "line moment
@@ -172,16 +303,6 @@ nnoremap <Leader>wt :VimwikiTable<CR>
 nnoremap <Leader>wha :VimwikiAll2HTML<CR>
 
 
-
-
-"others
-nnoremap <C-i> :%s//gI<Left><Left><Left>
-nnoremap <Leader>g :bp<CR>
-nnoremap <Leader>n :bn<CR>
-
-
-
-
 "To clear all the vim registers whenever you reopen vim
 command! WipeReg for i in range(34,122) | silent! call setreg(nr2char(i), []) | endfor
 autocmd VimEnter * WipeReg
@@ -189,7 +310,232 @@ autocmd VimEnter * WipeReg
 
 
 
+
+
+
+
+
+
+"//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+"others
+"nnoremap <C-i> :%s//gI<Left><Left><Left>
+nnoremap <Leader>g :bp<CR>
+nnoremap <Leader>n :bn<CR>
+nnoremap <Leader>ut :UndotreeToggle<CR>
+nnoremap <Leader>uf :UndotreeFocus<CR>
+
+
+
+if !exists('g:undotree_WindowLayout')
+    let g:undotree_WindowLayout = 4
+endif
+
+" e.g. using 'd' instead of 'days' to save some space.
+if !exists('g:undotree_ShortIndicators')
+    let g:undotree_ShortIndicators = 1
+endif
+
+" undotree window width
+if !exists('g:undotree_SplitWidth')
+    if g:undotree_ShortIndicators == 1
+        let g:undotree_SplitWidth = 24
+    else
+        let g:undotree_SplitWidth = 30
+    endif
+endif
+
+" diff window height
+if !exists('g:undotree_DiffpanelHeight')
+    let g:undotree_DiffpanelHeight = 10
+endif
+
+" auto open diff window
+if !exists('g:undotree_DiffAutoOpen')
+    let g:undotree_DiffAutoOpen = 1
+endif
+
+" if set, let undotree window get focus after being opened, otherwise
+" focus will stay in current window.
+if !exists('g:undotree_SetFocusWhenToggle')
+    let g:undotree_SetFocusWhenToggle = 1
+endif
+
+" tree node shape.
+if !exists('g:undotree_TreeNodeShape')
+    let g:undotree_TreeNodeShape = '*'
+endif
+
+" tree vertical shape.
+if !exists('g:undotree_TreeVertShape')
+    let g:undotree_TreeVertShape = '|'
+endif
+
+if !exists('g:undotree_DiffCommand')
+    let g:undotree_DiffCommand = "diff"
+endif
+
+" relative timestamp
+if !exists('g:undotree_RelativeTimestamp')
+    let g:undotree_RelativeTimestamp = 1
+endif
+
+" Highlight changed text
+if !exists('g:undotree_HighlightChangedText')
+    let g:undotree_HighlightChangedText = 1
+endif
+
+" Highlight changed text using signs in the gutter
+if !exists('g:undotree_HighlightChangedWithSign')
+    let g:undotree_HighlightChangedWithSign = 1
+endif
+
+" Highlight linked syntax type.
+" You may chose your favorite through ":hi" command
+if !exists('g:undotree_HighlightSyntaxAdd')
+    let g:undotree_HighlightSyntaxAdd = "DiffAdd"
+endif
+if !exists('g:undotree_HighlightSyntaxChange')
+    let g:undotree_HighlightSyntaxChange = "DiffChange"
+endif
+if !exists('g:undotree_HighlightSyntaxDel')
+    let g:undotree_HighlightSyntaxDel = "DiffDelete"
+endif
+
+" Deprecates the old style configuration.
+if exists('g:undotree_SplitLocation')
+    echo "g:undotree_SplitLocation is deprecated,
+                \ please use g:undotree_WindowLayout instead."
+endif
+
+" Show help line
+if !exists('g:undotree_HelpLine')
+    let g:undotree_HelpLine = 1
+endif
+
+" Show cursorline
+if !exists('g:undotree_CursorLine')
+    let g:undotree_CursorLine = 1
+endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+ "nerdtree 
+"nnoremap <C-n> :NERDTreeToggle<CR>
+"nnoremap <C-f> :NERDTreeFind<CR>
+"nnoremap <leader>fo :NERDTreeFocus<CR>
+"nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+"nnoremap <C-f> :NERDTreeFind<CR>
+
+
+"nerdtree settings
+" Start NERDTree and put the cursor back in the other window.
+autocmd VimEnter * NERDTree | wincmd p
+" Exit Vim if NERDTree is the only window remaining in the only tab.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+let g:NERDTreeGitStatusNodeColorization = 1
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+                \ 'Modified'  :'✹',
+                \ 'Staged'    :'✚',
+                \ 'Untracked' :'✭',
+                \ 'Renamed'   :'➜',
+                \ 'Unmerged'  :'═',
+                \ 'Deleted'   :'✖',
+                \ 'Dirty'     :'✗',
+                \ 'Ignored'   :'☒',
+                \ 'Clean'     :'✔︎',
+                \ 'Unknown'   :'?',
+                \ }
+let g:NERDTreeGitStatusUseNerdFonts = 1 " you should install nerdfonts by yourself. default: 0
+"let g:NERDTreeGitStatusShowIgnored = 1 " a heavy feature may cost much more time. default: 0
+"let g:NERDTreeGitStatusUntrackedFilesMode = 'all' " a heavy feature too. default: normal
+"let g:NERDTreeGitStatusGitBinPath = '/your/file/path' " default: git (auto find in path)
+let g:NERDTreeGitStatusShowClean = 0 " default: 0
+let g:NERDTreeGitStatusConcealBrackets = 1 " default: 0
+
+
+
+let g:webdevicons_enable = 1
+" change the default character when no match found
+let g:WebDevIconsUnicodeDecorateFileNodesDefaultSymbol = 'ƛ'
+let g:WebDevIconsOS = 'Darwin'
+let g:NERDTreeIgnore = ['^node_modules$']
+set guifont=DroidSansMono\ Nerd\ Font\ 11
+let g:airline_powerline_fonts = 1
+
+
+" sync open file with NERDTree
+" Check if NERDTree is open or active
+function! IsNERDTreeOpen()
+  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
+endfunction
+
+" Call NERDTreeFind iff NERDTree is active, current window contains a modifiable
+" file, and we're not in vimdiff
+function! SyncTree()
+  if &modifiable && IsNERDTreeOpen() && strlen(expand('%')) > 0 && !&diff
+    NERDTreeFind
+    wincmd p
+  endif
+endfunction
+
+" Highlight currently open buffer in NERDTree
+autocmd BufEnter * call SyncTree()
+
+
+
+
+
+
+
+
+
+
+
+
+"////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 
@@ -229,9 +575,14 @@ highlight GitGutterDelete guifg=#ff2222 ctermfg=1
 
 
 
+
+
+
 "fuzzy file finder
 nnoremap <Leader>ff  :Files<CR>
 nnoremap <Leader>fb  :Buffers<CR>
+
+
 
 
 let g:fzf_action = {
@@ -239,33 +590,43 @@ let g:fzf_action = {
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 
-" Enable per-command history.
-" CTRL-N and CTRL-P will be automatically bound to next-history and
-" previous-history instead of down and up. If you don't like the change,
-" explicitly bind the keys to down and up in your $FZF_DEFAULT_OPTS.
 let g:fzf_history_dir = '~/.local/share/fzf-history'
+" CTRL-N/P to cycle through the command list.
 
 "map <C-f> :Files<CR>
 "map <leader>b :Buffers<CR>
-nnoremap <leader>r :Rg<CR>
-nnoremap <leader>t :Tags<CR>
-nnoremap <leader>m :Marks<CR>
-
+nnoremap <leader>rg :Rg<CR>
+"nnoremap <leader>G :GGrep<CR>
 
 let g:fzf_tags_command = 'ctags -R'
 " Border color
 let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
-
-let $FZF_DEFAULT_OPTS = '--layout=reverse --info=inline'
+" let g:fzf_layout = { 'window': 'vs' } " in case preview not working properly.
+"let $FZF_DEFAULT_OPTS = '--layout=reverse --info=inline' "might add --no-unicode
 let $FZF_DEFAULT_COMMAND="rg --files --hidden"
 
-
 " Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
 
 "Get Files
 command! -bang -nargs=? -complete=dir Files
     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
 
+" command! -bang -nargs=? -complete=dir Files
+"     \ call fzf#vim#files(<q-args>, {'options': ['--layout=reverse', '--info=inline', '--preview', 'bat {}']}, <bang>0)
 
 " Get text in files with Rg
 command! -bang -nargs=* Rg
@@ -288,7 +649,15 @@ command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 command! -bang -nargs=* GGrep
   \ call fzf#vim#grep(
   \   'git grep --line-number '.shellescape(<q-args>), 0,
-  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0) * call SyncTree()
+  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+
+let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
+
+
+
+
+
+
 
 
 
@@ -469,3 +838,22 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
+
+
+"/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+set cmdheight=1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
